@@ -2,6 +2,7 @@ package com.alexic0n.moneymate.ledgerapp.definition.currency;
 
 import com.alexic0n.moneymate.ledgerapp.definition.currency.model.Currency;
 import com.alexic0n.moneymate.ledgerapp.definition.ledger.LedgerService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -41,14 +42,14 @@ public class CurrencyController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createCurrency(@RequestBody Currency currency){
+    public ResponseEntity<Void> createCurrency(@RequestBody @Valid Currency currency){
         return ResponseEntity.created(
                 URI.create(format("/money-mate/ledger-app/currencies/%s", currencyService.createEntity(currency).getId().toString()))
         ).build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateCurrency(@PathVariable String id, @RequestBody Currency currency){
+    public ResponseEntity<Void> updateCurrency(@PathVariable String id, @RequestBody @Valid Currency currency){
         currencyService.updateEntity(id, currency);
         return ResponseEntity.noContent().build();
     }

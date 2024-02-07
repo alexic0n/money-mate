@@ -2,6 +2,7 @@ package com.alexic0n.moneymate.ledgerapp.definition.ledger;
 
 
 import com.alexic0n.moneymate.ledgerapp.definition.ledger.model.Ledger;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -32,14 +33,14 @@ public class LedgerController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLedger(@RequestBody Ledger ledger){
+    public ResponseEntity<Void> createLedger(@RequestBody @Valid Ledger ledger){
         return ResponseEntity.created(
                 URI.create(format("/money-mate/ledger-app/ledgers/%s", ledgerService.createEntity(ledger).getId().toString()))
         ).build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateLedger(@PathVariable String id, @RequestBody Ledger ledger){
+    public ResponseEntity<Void> updateLedger(@PathVariable String id, @RequestBody @Valid Ledger ledger){
         ledgerService.updateEntity(id, ledger);
         return ResponseEntity.noContent().build();
     }
