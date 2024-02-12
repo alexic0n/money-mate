@@ -2,17 +2,24 @@ package com.alexic0n.moneymate.transactionapp.definition.transaction;
 
 import com.alexic0n.moneymate.transactionapp.definition.AbstractTransactionApplicationService;
 import com.alexic0n.moneymate.transactionapp.definition.transaction.model.Transaction;
+import com.alexic0n.moneymate.transactionapp.query.ledger.LedgerClient;
+import com.alexic0n.moneymate.transactionapp.query.ledger.model.Ledger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class TransactionService extends AbstractTransactionApplicationService<TransactionRepository, Transaction> {
 
-    private final WebClient webClient;
+    private final LedgerClient ledgerClient;
 
-    public TransactionService(TransactionRepository repository) {
+    public TransactionService(
+            TransactionRepository repository,
+            LedgerClient ledgerClient
+        ) {
         super(repository, "transaction");
+        this.ledgerClient = ledgerClient;
     }
 
 
@@ -22,8 +29,8 @@ public class TransactionService extends AbstractTransactionApplicationService<Tr
 
     @Override
     public void validateCreateEntity(Transaction entity) {
+        Ledger ledger = ledgerClient.getLedgerById(entity.getLedgerId());
         super.validateCreateEntity(entity);
-
     }
 
 }
