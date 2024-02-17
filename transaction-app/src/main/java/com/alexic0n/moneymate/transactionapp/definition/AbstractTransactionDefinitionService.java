@@ -1,32 +1,29 @@
 package com.alexic0n.moneymate.transactionapp.definition;
 
 
+import com.alexic0n.moneymate.transactionapp.AbstractTransactionService;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.web.ErrorResponseException;
 
 import java.util.List;
 
 import static java.lang.String.format;
 
-public abstract class AbstractTransactionApplicationService<S extends MongoRepository<T, ObjectId>, T extends AbstractTransactionApplicationEntity> {
+public abstract class AbstractTransactionDefinitionService<S extends MongoRepository<T, ObjectId>, T extends AbstractTransactionDefinitionEntity> extends AbstractTransactionService {
 
     protected final S repository;
 
-    protected final String entityName;
 
-    public AbstractTransactionApplicationService(S repository, String entityName) {
+    public AbstractTransactionDefinitionService(S repository, String entityName) {
+        super(entityName);
         this.repository = repository;
-        this.entityName = entityName;
     }
     
     public void validateEntityExistsById(String id) {
         if(!repository.existsById(parseObjectId(id))) {
-            throw notFoundException(id, null);
+            throw notFoundException(id);
         }
     }
 
@@ -38,7 +35,7 @@ public abstract class AbstractTransactionApplicationService<S extends MongoRepos
     public T getEntityById(String id) {
         return repository
                 .findById(parseObjectId(id))
-                .orElseThrow(() -> notFoundException(id, null));
+                .orElseThrow(() -> notFoundException(id));
     }
 
     public List<T> getListOfAllEntities() {
@@ -71,29 +68,7 @@ public abstract class AbstractTransactionApplicationService<S extends MongoRepos
         try {
             return new ObjectId(id);
         } catch (IllegalArgumentException e) {
-            throw badRequestException(format("Invalid ObjectId: %s", id), e);
+            throw badRequestException(format("Invalid ObjectId: %s", id));
         }
-    }
-
-    protected ErrorResponseException notFoundException(String id, Throwable cause) {
-        return new ErrorResponseException(
-                HttpStatus.NOT_FOUND,
-                ProblemDetail.forStatusAndDetail(
-                        HttpStatus.NOT_FOUND,
-                        format("%s with id %s not found", entityName, id)
-                ),
-                cause
-        );
-    }
-
-    protected ErrorResponseException badRequestException(String message, Throwable cause) {
-        return new ErrorResponseException(
-                HttpStatus.BAD_REQUEST,
-                ProblemDetail.forStatusAndDetail(
-                        HttpStatus.BAD_REQUEST,
-                        message
-                ),
-                cause
-        );
     }
 }

@@ -1,6 +1,6 @@
 package com.alexic0n.moneymate.transactionapp.definition.transaction.model;
 
-import com.alexic0n.moneymate.transactionapp.definition.AbstractTransactionApplicationEntity;
+import com.alexic0n.moneymate.transactionapp.definition.AbstractTransactionDefinitionEntity;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class Transaction extends AbstractTransactionApplicationEntity {
+public class Transaction extends AbstractTransactionDefinitionEntity {
 
     private String ledgerId;
 

@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 @Setter
-public abstract class AbstractTransactionApplicationEntity {
+public abstract class AbstractTransactionDefinitionEntity {
 
     @MongoId
     @JsonSerialize(using= ToStringSerializer.class)

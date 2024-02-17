@@ -37,13 +37,4 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getEntityById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<Void> createTransaction(@RequestBody Transaction transaction){
-        return ResponseEntity.created(
-                URI.create(format(
-                        "/money-mate/ledger-app/ledgers/%s",
-                        transactionService.createEntity(transaction).getId().toString()
-                ))
-        ).build();
-    }
 }
