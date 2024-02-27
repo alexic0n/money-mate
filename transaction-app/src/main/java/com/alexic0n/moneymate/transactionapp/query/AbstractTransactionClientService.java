@@ -24,8 +24,8 @@ public abstract class AbstractTransactionClientService<T> extends AbstractTransa
         this.webClient = webClient;
     }
 
-    public T getEntityById(String id) {
-        return  webClient.get()
+    public T getEntityById(String id, Class<T> responseBodyType) {
+        return webClient.get()
                 .uri(targetUrl + "/" + id)
                 .retrieve()
                 .onStatus(
@@ -36,7 +36,7 @@ public abstract class AbstractTransactionClientService<T> extends AbstractTransa
                         httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
                         clientResponse -> {throw badRequestException(format(BAD_REQUEST_MESSAGE, this.entityName, id));}
                 )
-                .bodyToMono(new ParameterizedTypeReference<T>(){})
+                .bodyToMono(responseBodyType)
                 .block();
     }
 }

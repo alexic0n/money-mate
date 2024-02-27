@@ -10,6 +10,8 @@ import com.alexic0n.moneymate.transactionapp.processing.transaction.model.split.
 import com.alexic0n.moneymate.transactionapp.processing.transaction.model.split.EqualTransactionSplit;
 import com.alexic0n.moneymate.transactionapp.processing.transaction.model.split.UnequalAmountTransactionSplit;
 import com.alexic0n.moneymate.transactionapp.processing.transaction.model.split.UnequalPercentageTransactionSplit;
+import com.alexic0n.moneymate.transactionapp.query.user.UserClientService;
+import com.alexic0n.moneymate.transactionapp.query.user.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,16 +24,21 @@ public class TransactionCreationService extends AbstractTransactionService {
 
     private final DebtService debtService;
 
+    private final UserClientService userClientService;
+
     public TransactionCreationService(
             TransactionService transactionService,
-            DebtService debtService
+            DebtService debtService,
+            UserClientService userClientService
     ) {
         super("createTransaction");
         this.transactionService = transactionService;
         this.debtService = debtService;
+        this.userClientService = userClientService;
     }
 
     public Transaction createTransaction(TransactionCreationRequest request) {
+        validateUserIdsInRequest(request);
         Transaction transaction = transactionService.createEntity(new Transaction(
                 request.getLedgerId(),
                 request.getDescription(),
@@ -41,6 +48,11 @@ public class TransactionCreationService extends AbstractTransactionService {
         List<Debt> debts = createDebts(request.getAmount(), request.getSplit(), transaction.getId().toString());
         debts.forEach(debtService::createEntity);
         return transaction;
+    }
+
+    private void validateUserIdsInRequest(TransactionCreationRequest request){
+        userClientService.getEntityById(request.getUserId(), User.class);
+        request.getSplit().getUserIdsForVerification().forEach(userId -> userClientService.getEntityById(userId, User.class));
     }
 
     private List<Debt> createDebts(Long amount, AbstractTransactionSplit split, String transactionId) {
@@ -71,6 +83,7 @@ public class TransactionCreationService extends AbstractTransactionService {
         return debts;
     }
 
+    //TODO implement this
     private List<Debt> createDebtsFromUnequalPercentageSplit(Long amount, UnequalPercentageTransactionSplit split, String transactionId) {
         return null;
     }

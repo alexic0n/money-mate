@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
 import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
@@ -12,4 +13,9 @@ import java.util.Map;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UnequalPercentageTransactionSplit extends AbstractTransactionSplit {
     private Map<String, Long> userAmountMap;
+
+    @Override
+    public List<String> getUserIdsForVerification() {
+        return userAmountMap.keySet().stream().toList();
+    }
 }

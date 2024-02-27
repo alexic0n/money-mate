@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "split_type")
@@ -15,4 +16,8 @@ import java.util.List;
 })
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public abstract class AbstractTransactionSplit {
+
+    public List<String> getUserIdsForVerification() {
+        return new ArrayList<>();
+    }
 }

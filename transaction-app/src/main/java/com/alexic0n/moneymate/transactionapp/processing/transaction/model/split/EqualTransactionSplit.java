@@ -12,4 +12,9 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class EqualTransactionSplit extends AbstractTransactionSplit{
     List<String> userIds;
+
+    @Override
+    public List<String> getUserIdsForVerification() {
+        return userIds;
+    }
 }

@@ -23,7 +23,6 @@ public class TransactionCreationController {
 
     @PostMapping
     public ResponseEntity<Void> createTransaction(@RequestBody TransactionCreationRequest request) {
-        transactionCreationService.createTransaction(request);
         return ResponseEntity.created(
                 URI.create(format("/transactions/%s", transactionCreationService.createTransaction(request).getId()))
         ).build();
